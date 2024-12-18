@@ -31,7 +31,11 @@
 
     <div id="responseContainer" style="display: none;">
         <h2>Response:</h2>
-        <pre id="responseContent"></pre>
+        <p><strong>URL:</strong> <span id="urlDisplay"></span></p>
+        <p><strong>Message:</strong> <span id="messageDisplay"></span></p>
+        <p><strong>Language:</strong> <span id="languageDisplay"></span></p>
+        <p><strong>Business Start Time:</strong> <span id="startTimeDisplay"></span></p>
+        <p><strong>Business End Time:</strong> <span id="endTimeDisplay"></span></p>
     </div>
 
     <script>
@@ -42,7 +46,11 @@
 
             // Hiding response container and showing loading message
             document.getElementById("responseContainer").style.display = "none";
-            document.getElementById("responseContent").textContent = "Loading...";
+            document.getElementById("urlDisplay").textContent = "Loading...";
+            document.getElementById("messageDisplay").textContent = "Loading...";
+            document.getElementById("languageDisplay").textContent = "Loading...";
+            document.getElementById("startTimeDisplay").textContent = "Loading...";
+            document.getElementById("endTimeDisplay").textContent = "Loading...";
 
             // Making the GET request to the Salesforce API
             fetch(apiEndpoint, {
@@ -60,12 +68,22 @@
             .then(data => {
                 // Displaying the response once data is fetched
                 document.getElementById("responseContainer").style.display = "block";
-                document.getElementById("responseContent").textContent = JSON.stringify(data, null, 2);
+
+                // Filtering the necessary data
+                document.getElementById("urlDisplay").textContent = data.url || "N/A";
+                document.getElementById("messageDisplay").textContent = data.message || "N/A";
+                document.getElementById("languageDisplay").textContent = data.language || "N/A";
+                document.getElementById("startTimeDisplay").textContent = data.businessStartTime || "N/A";
+                document.getElementById("endTimeDisplay").textContent = data.businessEndTime || "N/A";
             })
             .catch(error => {
                 // Display error message if fetch fails
                 document.getElementById("responseContainer").style.display = "block";
-                document.getElementById("responseContent").textContent = `Error: ${error.message}`;
+                document.getElementById("urlDisplay").textContent = `Error: ${error.message}`;
+                document.getElementById("messageDisplay").textContent = `Error: ${error.message}`;
+                document.getElementById("languageDisplay").textContent = `Error: ${error.message}`;
+                document.getElementById("startTimeDisplay").textContent = `Error: ${error.message}`;
+                document.getElementById("endTimeDisplay").textContent = `Error: ${error.message}`;
             });
         }
     </script>
