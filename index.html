@@ -3,74 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Response Display</title>
+    <title>Public API Test</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            padding: 20px;
         }
-        .response-container {
+        #responseContainer {
             margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
         }
-        .response-container h3 {
-            margin-top: 0;
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 600px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
     </style>
 </head>
 <body>
+    <h1>API Call to Salesforce (Public)</h1>
 
-    <h1>Display API Response</h1>
-    <div>
-        <label for="url">Enter URL:</label>
-        <input type="text" id="url" value="https://ghostcodervikash.github.io/demo" />
-        <button onclick="fetchApiData()">Get Configuration</button>
-    </div>
+    <label for="url">Enter URL:</label>
+    <input type="text" id="url" value="https://ghostcodervikash.github.io/demo">
+    <button onclick="fetchApiData()">Get Config Data</button>
 
-    <div id="responseContainer" class="response-container" style="display:none;">
-        <h3>API Response:</h3>
+    <div id="responseContainer" style="display: none;">
+        <h2>Response:</h2>
         <pre id="responseContent"></pre>
     </div>
 
     <script>
         function fetchApiData() {
-            // Get the URL parameter from the input field
+            // Getting the URL value from the input
             const url = document.getElementById("url").value;
             const apiEndpoint = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=${encodeURIComponent(url)}`;
 
-            // Show the loading state
+            // Hiding response container and showing loading message
             document.getElementById("responseContainer").style.display = "none";
             document.getElementById("responseContent").textContent = "Loading...";
 
-            // Make the API request
+            // Making the GET request to the Salesforce API
             fetch(apiEndpoint, {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'  // Replace with a valid Salesforce access token
+                    'Content-Type': 'application/json' // Adjust headers as needed (CORS might block this on client-side)
                 }
             })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
+                if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
+                return response.json(); // Assuming the response is in JSON format
             })
             .then(data => {
-                // Display the response in the UI
+                // Displaying the response once data is fetched
                 document.getElementById("responseContainer").style.display = "block";
                 document.getElementById("responseContent").textContent = JSON.stringify(data, null, 2);
             })
             .catch(error => {
-                // Handle error and display an error message
+                // Display error message if fetch fails
                 document.getElementById("responseContainer").style.display = "block";
                 document.getElementById("responseContent").textContent = `Error: ${error.message}`;
             });
         }
     </script>
-
 </body>
 </html>
