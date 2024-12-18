@@ -40,7 +40,11 @@
 
     <div id="responseContainer">
         <h2>API Response:</h2>
-        <pre id="responseContent"></pre>
+        <p><strong>URL:</strong> <span id="urlDisplay">Loading...</span></p>
+        <p><strong>Message:</strong> <span id="messageDisplay">Loading...</span></p>
+        <p><strong>Language:</strong> <span id="languageDisplay">Loading...</span></p>
+        <p><strong>Business Start Time:</strong> <span id="startTimeDisplay">Loading...</span></p>
+        <p><strong>Business End Time:</strong> <span id="endTimeDisplay">Loading...</span></p>
     </div>
 
     <script>
@@ -67,25 +71,32 @@
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
-                return response.json(); // Assuming the response is in JSON format
+                return response.json(); // Automatically parses the JSON string into an object
             })
             .then(data => {
                 // Hide spinner and show response message once data is fetched
                 document.getElementById("spinner").style.display = "none";
                 document.getElementById("responseMessage").style.display = "block";
 
-                // Log the response in the console as a table for better readability
-                console.table(data);
-
-                // Optionally, show the response in the UI
+                // Display the response in the UI
                 document.getElementById("responseContainer").style.display = "block";
-                document.getElementById("responseContent").textContent = JSON.stringify(data, null, 2);
+                
+                // Set the individual elements to the corresponding values from the response
+                document.getElementById("urlDisplay").textContent = data.url || "N/A";
+                document.getElementById("messageDisplay").textContent = data.message || "N/A";
+                document.getElementById("languageDisplay").textContent = data.language || "N/A";
+                document.getElementById("startTimeDisplay").textContent = data.businessStartTime || "N/A";
+                document.getElementById("endTimeDisplay").textContent = data.businessEndTime || "N/A";
+
+                // Log the response to the console in a more readable table format
+                console.table(data);
             })
             .catch(error => {
                 // Handle error and display a message
                 document.getElementById("spinner").style.display = "none";
                 document.getElementById("responseMessage").style.display = "block";
-                document.getElementById("responseContent").textContent = `Error: ${error.message}`;
+                document.getElementById("responseContainer").style.display = "none";
+                document.getElementById("responseMessage").textContent = `Error: ${error.message}`;
             });
         }
     </script>
