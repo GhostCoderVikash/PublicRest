@@ -9,43 +9,10 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-        #responseContainer {
-            margin-top: 20px;
-            display: none;
-        }
-        #spinner {
-            display: block;
-            margin: 20px auto;
-        }
-        #responseMessage {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 1.5em;
-        }
     </style>
 </head>
 <body>
     <h1>API Call to Salesforce (Public)</h1>
-
-    <!-- Spinner element -->
-    <div id="spinner">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Iconic_spinner.gif" alt="Loading..." width="50">
-        <p>Loading data, please wait...</p>
-    </div>
-
-    <!-- Response message and container (hidden until response is available) -->
-    <div id="responseMessage" style="display: none;">
-        <p>Fetch complete! Check the console for data.</p>
-    </div>
-
-    <div id="responseContainer">
-        <h2>API Response:</h2>
-        <p><strong>URL:</strong> <span id="urlDisplay">Loading...</span></p>
-        <p><strong>Message:</strong> <span id="messageDisplay">Loading...</span></p>
-        <p><strong>Language:</strong> <span id="languageDisplay">Loading...</span></p>
-        <p><strong>Business Start Time:</strong> <span id="startTimeDisplay">Loading...</span></p>
-        <p><strong>Business End Time:</strong> <span id="endTimeDisplay">Loading...</span></p>
-    </div>
 
     <script>
         window.onload = function() {
@@ -55,10 +22,8 @@
         function fetchApiData() {
             const apiEndpoint = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=https://ghostcodervikash.github.io/demo`;
 
-            // Show spinner and hide response container initially
-            document.getElementById("spinner").style.display = "block";
-            document.getElementById("responseMessage").style.display = "none";
-            document.getElementById("responseContainer").style.display = "none";
+            // Log the initial API endpoint
+            console.log("Calling API with endpoint:", apiEndpoint);
 
             // Making the GET request to the Salesforce API
             fetch(apiEndpoint, {
@@ -68,27 +33,20 @@
                 }
             })
             .then(response => {
+                // Log the response status
+                console.log("Response Status:", response.status);
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
+
                 return response.json(); // Automatically parses the JSON string into an object
             })
             .then(data => {
-                // Hide spinner and show response message once data is fetched
-                document.getElementById("spinner").style.display = "none";
-                document.getElementById("responseMessage").style.display = "block";
+                // Log the full data object
+                console.log("Data received:", data);
 
-                // Display the response in the UI
-                document.getElementById("responseContainer").style.display = "block";
-                
-                // Set the individual elements to the corresponding values from the response
-                document.getElementById("urlDisplay").textContent = data.url || "N/A";
-                document.getElementById("messageDisplay").textContent = data.message || "N/A";
-                document.getElementById("languageDisplay").textContent = data.language || "N/A";
-                document.getElementById("startTimeDisplay").textContent = data.businessStartTime || "N/A";
-                document.getElementById("endTimeDisplay").textContent = data.businessEndTime || "N/A";
-
-                // Log each property separately to the console
+                // Log each property separately
                 console.log("URL:", data.url);
                 console.log("Message:", data.message);
                 console.log("Language:", data.language);
@@ -96,11 +54,8 @@
                 console.log("Business End Time:", data.businessEndTime);
             })
             .catch(error => {
-                // Handle error and display a message
-                document.getElementById("spinner").style.display = "none";
-                document.getElementById("responseMessage").style.display = "block";
-                document.getElementById("responseContainer").style.display = "none";
-                document.getElementById("responseMessage").textContent = `Error: ${error.message}`;
+                // Log the error
+                console.log("Error:", error.message);
             });
         }
     </script>
