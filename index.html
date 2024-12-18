@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Response Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .response-container h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Display API Response</h1>
+    <div>
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" value="https://ghostcodervikash.github.io/demo" />
+        <button onclick="fetchApiData()">Get Configuration</button>
+    </div>
+
+    <div id="responseContainer" class="response-container" style="display:none;">
+        <h3>API Response:</h3>
+        <pre id="responseContent"></pre>
+    </div>
+
+    <script>
+        function fetchApiData() {
+            // Get the URL parameter from the input field
+            const url = document.getElementById("url").value;
+            const apiEndpoint = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=${encodeURIComponent(url)}`;
+
+            // Show the loading state
+            document.getElementById("responseContainer").style.display = "none";
+            document.getElementById("responseContent").textContent = "Loading...";
+
+            // Make the API request
+            fetch(apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'  // Replace with a valid Salesforce access token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            })
+            .then(data => {
+                // Display the response in the UI
+                document.getElementById("responseContainer").style.display = "block";
+                document.getElementById("responseContent").textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                // Handle error and display an error message
+                document.getElementById("responseContainer").style.display = "block";
+                document.getElementById("responseContent").textContent = `Error: ${error.message}`;
+            });
+        }
+    </script>
+
+</body>
+</html>
