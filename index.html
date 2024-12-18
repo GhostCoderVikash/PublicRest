@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public API Test</title>
+    <title>Public API Test with Proxy</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <h1>API Call to Salesforce (Public)</h1>
+    <h1>API Call to Salesforce (Public) with CORS Proxy</h1>
 
     <label for="url">Enter URL:</label>
     <input type="text" id="url" value="https://ghostcodervikash.github.io/demo">
@@ -38,17 +38,23 @@
         function fetchApiData() {
             // Getting the URL value from the input
             const url = document.getElementById("url").value;
+            // Salesforce API endpoint
             const apiEndpoint = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=${encodeURIComponent(url)}`;
+            // CORS proxy URL to bypass CORS issues
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
+            // Full URL with proxy
+            const proxiedUrl = `${proxyUrl}${apiEndpoint}`;
 
             // Hiding response container and showing loading message
             document.getElementById("responseContainer").style.display = "none";
             document.getElementById("responseContent").textContent = "Loading...";
 
-            // Making the GET request to the Salesforce API
-            fetch(apiEndpoint, {
+            // Making the GET request to the Salesforce API through the proxy
+            fetch(proxiedUrl, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json' // Adjust headers as needed (CORS might block this on client-side)
+                    'Content-Type': 'application/json' // Adjust headers as needed
                 }
             })
             .then(response => {
