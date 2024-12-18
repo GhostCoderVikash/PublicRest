@@ -66,15 +66,18 @@
                 return response.json(); // Assuming the response is in JSON format
             })
             .then(data => {
+                // Debugging: Output the entire response to the console to see the structure
+                console.log("API Response:", data);
+
                 // Displaying the response once data is fetched
                 document.getElementById("responseContainer").style.display = "block";
 
-                // Filtering the necessary data
-                document.getElementById("urlDisplay").textContent = data.url || "N/A";
-                document.getElementById("messageDisplay").textContent = data.message || "N/A";
-                document.getElementById("languageDisplay").textContent = data.language || "N/A";
-                document.getElementById("startTimeDisplay").textContent = data.businessStartTime || "N/A";
-                document.getElementById("endTimeDisplay").textContent = data.businessEndTime || "N/A";
+                // Check if the properties exist in the response and map accordingly
+                document.getElementById("urlDisplay").textContent = data.url ? data.url : "N/A";
+                document.getElementById("messageDisplay").textContent = data.message ? data.message : "N/A";
+                document.getElementById("languageDisplay").textContent = data.language ? data.language : "N/A";
+                document.getElementById("startTimeDisplay").textContent = data.businessStartTime ? data.businessStartTime : "N/A";
+                document.getElementById("endTimeDisplay").textContent = data.businessEndTime ? data.businessEndTime : "N/A";
             })
             .catch(error => {
                 // Display error message if fetch fails
