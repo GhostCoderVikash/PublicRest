@@ -11,46 +11,50 @@
         }
         #responseContainer {
             margin-top: 20px;
+            display: none;
         }
-        pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border-radius: 5px;
-            max-width: 600px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        #spinner {
+            display: block;
+            margin: 20px auto;
+        }
+        #responseMessage {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5em;
         }
     </style>
 </head>
 <body>
     <h1>API Call to Salesforce (Public)</h1>
 
-    <label for="url">Enter URL:</label>
-    <input type="text" id="url" value="https://ghostcodervikash.github.io/demo">
-    <button onclick="fetchApiData()">Get Config Data</button>
+    <!-- Spinner element -->
+    <div id="spinner">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Iconic_spinner.gif" alt="Loading..." width="50">
+        <p>Loading data, please wait...</p>
+    </div>
 
-    <div id="responseContainer" style="display: none;">
-        <h2>Response:</h2>
-        <p><strong>URL:</strong> <span id="urlDisplay"></span></p>
-        <p><strong>Message:</strong> <span id="messageDisplay"></span></p>
-        <p><strong>Language:</strong> <span id="languageDisplay"></span></p>
-        <p><strong>Business Start Time:</strong> <span id="startTimeDisplay"></span></p>
-        <p><strong>Business End Time:</strong> <span id="endTimeDisplay"></span></p>
+    <!-- Response message and container (hidden until response is available) -->
+    <div id="responseMessage" style="display: none;">
+        <p>Fetch complete! Check the console for data.</p>
+    </div>
+
+    <div id="responseContainer">
+        <h2>API Response:</h2>
+        <pre id="responseContent"></pre>
     </div>
 
     <script>
-        function fetchApiData() {
-            // Getting the URL value from the input
-            const url = document.getElementById("url").value;
-            const apiEndpoint = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=${encodeURIComponent(url)}`;
+        window.onload = function() {
+            fetchApiData();
+        };
 
-            // Hiding response container and showing loading message
+        function fetchApiData() {
+            const apiEndpoint = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=https://ghostcodervikash.github.io/demo`;
+
+            // Show spinner and hide response container initially
+            document.getElementById("spinner").style.display = "block";
+            document.getElementById("responseMessage").style.display = "none";
             document.getElementById("responseContainer").style.display = "none";
-            document.getElementById("urlDisplay").textContent = "Loading...";
-            document.getElementById("messageDisplay").textContent = "Loading...";
-            document.getElementById("languageDisplay").textContent = "Loading...";
-            document.getElementById("startTimeDisplay").textContent = "Loading...";
-            document.getElementById("endTimeDisplay").textContent = "Loading...";
 
             // Making the GET request to the Salesforce API
             fetch(apiEndpoint, {
@@ -66,27 +70,22 @@
                 return response.json(); // Assuming the response is in JSON format
             })
             .then(data => {
-                // Debugging: Output the entire response to the console to see the structure
-                console.log("API Response:", data);
+                // Hide spinner and show response message once data is fetched
+                document.getElementById("spinner").style.display = "none";
+                document.getElementById("responseMessage").style.display = "block";
 
-                // Displaying the response once data is fetched
+                // Log the response in the console as a table for better readability
+                console.table(data);
+
+                // Optionally, show the response in the UI
                 document.getElementById("responseContainer").style.display = "block";
-
-                // Check if the properties exist in the response and map accordingly
-                document.getElementById("urlDisplay").textContent = data.url ? data.url : "N/A";
-                document.getElementById("messageDisplay").textContent = data.message ? data.message : "N/A";
-                document.getElementById("languageDisplay").textContent = data.language ? data.language : "N/A";
-                document.getElementById("startTimeDisplay").textContent = data.businessStartTime ? data.businessStartTime : "N/A";
-                document.getElementById("endTimeDisplay").textContent = data.businessEndTime ? data.businessEndTime : "N/A";
+                document.getElementById("responseContent").textContent = JSON.stringify(data, null, 2);
             })
             .catch(error => {
-                // Display error message if fetch fails
-                document.getElementById("responseContainer").style.display = "block";
-                document.getElementById("urlDisplay").textContent = `Error: ${error.message}`;
-                document.getElementById("messageDisplay").textContent = `Error: ${error.message}`;
-                document.getElementById("languageDisplay").textContent = `Error: ${error.message}`;
-                document.getElementById("startTimeDisplay").textContent = `Error: ${error.message}`;
-                document.getElementById("endTimeDisplay").textContent = `Error: ${error.message}`;
+                // Handle error and display a message
+                document.getElementById("spinner").style.display = "none";
+                document.getElementById("responseMessage").style.display = "block";
+                document.getElementById("responseContent").textContent = `Error: ${error.message}`;
             });
         }
     </script>
