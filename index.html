@@ -9,17 +9,6 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-        #responseContainer {
-            margin-top: 20px;
-        }
-        pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border-radius: 5px;
-            max-width: 600px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
     </style>
 </head>
 <body>
@@ -63,29 +52,25 @@
                 return response.json(); // Automatically parses the JSON string into an object
             })
             .then(data => {
-                // Log the full data object
+                // Log the full response data
                 console.log("Data received:", data);
 
-                // Map the values to variables
-                const url = data.url;
-                const message = data.message;
-                const language = data.language;
-                const businessStartTime = data.businessStartTime;
-                const businessEndTime = data.businessEndTime;
+                // Destructure the data object to get each value
+                const { URL, message, Language, Business_Start_Time, Business_End_Time } = data;
 
-                // Log each property separately
-                console.log("Mapped URL:", url);
+                // Log each variable separately
+                console.log("Mapped URL:", URL);
                 console.log("Mapped Message:", message);
-                console.log("Mapped Language:", language);
-                console.log("Mapped Business Start Time:", businessStartTime);
-                console.log("Mapped Business End Time:", businessEndTime);
+                console.log("Mapped Language:", Language);
+                console.log("Mapped Business Start Time:", Business_Start_Time);
+                console.log("Mapped Business End Time:", Business_End_Time);
 
                 // Display the values on the UI
-                document.getElementById("url").textContent = url;
+                document.getElementById("url").textContent = URL;
                 document.getElementById("message").textContent = message;
-                document.getElementById("language").textContent = language;
-                document.getElementById("businessStartTime").textContent = businessStartTime;
-                document.getElementById("businessEndTime").textContent = businessEndTime;
+                document.getElementById("language").textContent = Language;
+                document.getElementById("businessStartTime").textContent = Business_Start_Time;
+                document.getElementById("businessEndTime").textContent = Business_End_Time;
 
                 // Show the response container once data is fetched
                 document.getElementById("responseContainer").style.display = "block";
