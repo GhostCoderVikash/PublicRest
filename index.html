@@ -3,99 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Call to Salesforce (Public)</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-    </style>
+    <title>Fetch API and Parse XML Response</title>
 </head>
 <body>
-    <h1>API Call to Salesforce (Public)</h1>
-
     <script>
-        window.onload = function() {
-            fetchApiData();
-        };
-
-        async function fetchApiData() {
-            const apiEndpoint = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=https://ghostcodervikash.github.io/demo`;
-
-            // Log the initial API endpoint
-            console.log("Calling API with endpoint:", apiEndpoint);
-
+        // Function to fetch data from the given URL and parse the XML response
+        async function fetchData() {
             try {
-                // Making the GET request to the Salesforce API
-                const response = await fetch(apiEndpoint, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/xml' // Expecting XML response
-                    }
-                });
+                // Make the HTTP GET request to the provided URL
+                const response = await fetch('https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=https://ghostcodervikash.github.io/demo2/');
 
-                // Log the response status
-                console.log("Response Status:", response.status);
-
+                // Check if the response is successful
                 if (!response.ok) {
-                    throw new Error('Failed to fetch data');
+                    throw new Error('Network response was not ok');
                 }
 
-                // Get the response text (XML format)
-                const responseText = await response.text();
-                console.log("Response Text:", responseText); // Log the full XML response
+                // Get the response text (XML)
+                const xmlString = await response.text();
 
-                // Parse the XML response
+                // Parse the XML string
                 const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(responseText, "application/xml");
+                const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
-                // Log the parsed XML structure
-                console.log("Parsed XML:", xmlDoc);
+                // Extract the values from the XML
+                const businessEndTime = xmlDoc.getElementsByTagName("ConfigResponse:Business_End_Time")[0].textContent;
+                const businessStartTime = xmlDoc.getElementsByTagName("ConfigResponse:Business_Start_Time")[0].textContent;
+                const language = xmlDoc.getElementsByTagName("ConfigResponse:Language")[0].textContent;
+                const message = xmlDoc.getElementsByTagName("ConfigResponse:message")[0].textContent;
+                const url = xmlDoc.getElementsByTagName("ConfigResponse:URL")[0].textContent;
 
-                // Extract the data, handling the namespace correctly
-                const ns = "http://soap.sforce.com/schemas/class/MiawSiteConfigAPI"; // Define the namespace
-                const URL = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:URL");
-                const message = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:message");
-                const Language = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:Language");
-                const BusinessStartTime = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:Business_Start_Time");
-                const BusinessEndTime = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:Business_End_Time");
+                // Create an object with the extracted data
+                const data = {
+                    businessEndTime,
+                    businessStartTime,
+                    language,
+                    message,
+                    url
+                };
 
-                // Check if each element exists before accessing textContent
-                if (URL.length > 0) {
-                    console.log("URL:", URL[0].textContent);
-                } else {
-                    console.log("ConfigResponse:URL tag not found");
-                }
-
-                if (message.length > 0) {
-                    console.log("Message:", message[0].textContent);
-                } else {
-                    console.log("ConfigResponse:message tag not found");
-                }
-
-                if (Language.length > 0) {
-                    console.log("Language:", Language[0].textContent);
-                } else {
-                    console.log("ConfigResponse:Language tag not found");
-                }
-
-                if (BusinessStartTime.length > 0) {
-                    console.log("Business Start Time:", BusinessStartTime[0].textContent);
-                } else {
-                    console.log("ConfigResponse:Business_Start_Time tag not found");
-                }
-
-                if (BusinessEndTime.length > 0) {
-                    console.log("Business End Time:", BusinessEndTime[0].textContent);
-                } else {
-                    console.log("ConfigResponse:Business_End_Time tag not found");
-                }
-
+                // Log the parsed data to the console
+                console.log(data);
             } catch (error) {
-                // Log the error
-                console.log("Error:", error.message);
+                console.error('Error during the fetch or parsing the response:', error);
             }
         }
+
+        // Call the function when the page loads
+        fetchData();
     </script>
 </body>
 </html>
