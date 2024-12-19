@@ -28,20 +28,21 @@
             fetchApiData();
         };
 
-        function fetchApiData() {
+        async function fetchApiData() {
             const apiEndpoint = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=https://ghostcodervikash.github.io/demo`;
 
             // Log the initial API endpoint
             console.log("Calling API with endpoint:", apiEndpoint);
 
-            // Making the GET request to the Salesforce API
-            fetch(apiEndpoint, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json' // Adjust headers as needed (CORS might block this on client-side)
-                }
-            })
-            .then(response => {
+            try {
+                // Making the GET request to the Salesforce API
+                const response = await fetch(apiEndpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json' // Adjust headers as needed (CORS might block this on client-side)
+                    }
+                });
+
                 // Log the response status
                 console.log("Response Status:", response.status);
 
@@ -49,9 +50,8 @@
                     throw new Error('Failed to fetch data');
                 }
 
-                return response.json(); // Automatically parses the JSON string into an object
-            })
-            .then(data => {
+                const data = await response.json(); // Automatically parses the JSON string into an object
+
                 // Log the full response data
                 console.log("Data received:", data);
 
@@ -71,11 +71,10 @@
 
                 // Show the response container once data is fetched
                 document.getElementById("responseContainer").style.display = "block";
-            })
-            .catch(error => {
+            } catch (error) {
                 // Log the error
                 console.log("Error:", error.message);
-            });
+            }
         }
     </script>
 </body>
