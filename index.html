@@ -55,22 +55,19 @@
                 // Log the full response data
                 console.log("Data received:", data);
 
-                // Destructure the data object to get each value
-                const { URL, message, Language, Business_Start_Time, Business_End_Time } = data;
-
-                // Log each variable separately
-                console.log("Mapped URL:", URL);
-                console.log("Mapped Message:", message);
-                console.log("Mapped Language:", Language);
-                console.log("Mapped Business Start Time:", Business_Start_Time);
-                console.log("Mapped Business End Time:", Business_End_Time);
+                // Accessing properties directly from the object
+                console.log("Mapped URL:", data.URL);
+                console.log("Mapped Message:", data.message);
+                console.log("Mapped Language:", data.Language);
+                console.log("Mapped Business Start Time:", data.Business_Start_Time);
+                console.log("Mapped Business End Time:", data.Business_End_Time);
 
                 // Display the values on the UI
-                document.getElementById("url").textContent = URL;
-                document.getElementById("message").textContent = message;
-                document.getElementById("language").textContent = Language;
-                document.getElementById("businessStartTime").textContent = Business_Start_Time;
-                document.getElementById("businessEndTime").textContent = Business_End_Time;
+                document.getElementById("url").textContent = data.URL;
+                document.getElementById("message").textContent = data.message;
+                document.getElementById("language").textContent = data.Language;
+                document.getElementById("businessStartTime").textContent = data.Business_Start_Time;
+                document.getElementById("businessEndTime").textContent = data.Business_End_Time;
 
                 // Show the response container once data is fetched
                 document.getElementById("responseContainer").style.display = "block";
