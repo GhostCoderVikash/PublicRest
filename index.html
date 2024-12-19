@@ -3,65 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch API and Parse XML Response</title>
+    <title>Fetch Data from Salesforce</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
+    <h1>Fetch Config Data from Salesforce</h1>
+
+    <!-- Input for URL and button to fetch data -->
+    <label for="urlInput">Enter URL:</label>
+    <input type="text" id="urlInput" placeholder="https://example.com" />
+    <button onclick="fetchData()">Fetch Config</button>
+
+    <div id="result" class="result"></div>
+
     <script>
-        // Function to fetch data from the given URL and parse the XML response
+        // Function to fetch data from the Salesforce REST endpoint
         async function fetchData() {
+            const urlInput = document.getElementById('urlInput').value;
+            const resultDiv = document.getElementById('result');
+
+            // Check if URL is empty
+            if (!urlInput) {
+                resultDiv.innerHTML = '<span class="error">Please enter a valid URL.</span>';
+                return;
+            }
+
+            // Define the endpoint URL
+            const endpointUrl = `https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=${encodeURIComponent(urlInput)}`;
+
             try {
-                // Make the HTTP GET request to the provided URL
-                const response = await fetch('https://resourceful-fox-a2o4pb-dev-ed.trailblaze.my.site.com/services/apexrest/miawSiteConfigAPI?url=https://ghostcodervikash.github.io/demo2/');
+                // Make the GET request to the Salesforce API
+                const response = await fetch(endpointUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // If needed, you can add Salesforce session authentication here (OAuth token)
+                    }
+                });
 
-                // Check if the response is successful
+                // Check if the response is successful (status 200)
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    const errorData = await response.json();
+                    resultDiv.innerHTML = `<span class="error">Error: ${errorData.message || 'Unknown error'}</span>`;
+                    return;
                 }
 
-                // Get the response text (XML)
-                const xmlString = await response.text();
+                // Parse the JSON response
+                const data = await response.json();
 
-                // Log the raw XML response to inspect it
-                console.log('Raw XML Response:', xmlString);
-
-                // Parse the XML string
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(xmlString, "text/xml");
-
-                // Log the parsed XML document to inspect the structure
-                console.log('Parsed XML Document:', xmlDoc);
-
-                // Helper function to get text content safely
-                function getTextContent(tagName) {
-                    const element = xmlDoc.getElementsByTagName(tagName)[0];
-                    return element ? element.textContent : null;
-                }
-
-                // Extract the values from the XML using the helper function
-                const businessEndTime = getTextContent("ConfigResponse:Business_End_Time");
-                const businessStartTime = getTextContent("ConfigResponse:Business_Start_Time");
-                const language = getTextContent("ConfigResponse:Language");
-                const message = getTextContent("ConfigResponse:message");
-                const url = getTextContent("ConfigResponse:URL");
-
-                // Create an object with the extracted data
-                const data = {
-                    businessEndTime,
-                    businessStartTime,
-                    language,
-                    message,
-                    url
-                };
-
-                // Log the parsed data to the console
-                console.log(data);
+                // Display the result
+                resultDiv.innerHTML = `
+                    <h2>Config Data</h2>
+                    <p><strong>URL:</strong> ${data.URL}</p>
+                    <p><strong>Message:</strong> ${data.message}</p>
+                    <p><strong>Language:</strong> ${data.Language}</p>
+                    <p><strong>Business Start Time:</strong> ${data.Business_Start_Time}</p>
+                    <p><strong>Business End Time:</strong> ${data.Business_End_Time}</p>
+                `;
             } catch (error) {
-                console.error('Error during the fetch or parsing the response:', error);
+                // Handle any errors during the fetch
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
             }
         }
-
-        // Call the function when the page loads
-        fetchData();
     </script>
 </body>
 </html>
