@@ -43,25 +43,53 @@
 
                 // Get the response text (XML format)
                 const responseText = await response.text();
+                console.log("Response Text:", responseText); // Log the full XML response
 
                 // Parse the XML response
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(responseText, "application/xml");
 
-                // Extract the data, handling the namespace
-                const ns = "http://soap.sforce.com/schemas/class/MiawSiteConfigAPI";
-                const URL = xmlDoc.getElementsByTagNameNS(ns, "URL")[0].textContent;
-                const message = xmlDoc.getElementsByTagNameNS(ns, "message")[0].textContent;
-                const Language = xmlDoc.getElementsByTagNameNS(ns, "Language")[0].textContent;
-                const BusinessStartTime = xmlDoc.getElementsByTagNameNS(ns, "Business_Start_Time")[0].textContent;
-                const BusinessEndTime = xmlDoc.getElementsByTagNameNS(ns, "Business_End_Time")[0].textContent;
+                // Log the parsed XML structure
+                console.log("Parsed XML:", xmlDoc);
 
-                // Log each field separately
-                console.log("URL:", URL);
-                console.log("Message:", message);
-                console.log("Language:", Language);
-                console.log("Business Start Time:", BusinessStartTime);
-                console.log("Business End Time:", BusinessEndTime);
+                // Extract the data, handling the namespace correctly
+                const ns = "http://soap.sforce.com/schemas/class/MiawSiteConfigAPI"; // Define the namespace
+                const URL = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:URL");
+                const message = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:message");
+                const Language = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:Language");
+                const BusinessStartTime = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:Business_Start_Time");
+                const BusinessEndTime = xmlDoc.getElementsByTagNameNS(ns, "ConfigResponse:Business_End_Time");
+
+                // Check if each element exists before accessing textContent
+                if (URL.length > 0) {
+                    console.log("URL:", URL[0].textContent);
+                } else {
+                    console.log("ConfigResponse:URL tag not found");
+                }
+
+                if (message.length > 0) {
+                    console.log("Message:", message[0].textContent);
+                } else {
+                    console.log("ConfigResponse:message tag not found");
+                }
+
+                if (Language.length > 0) {
+                    console.log("Language:", Language[0].textContent);
+                } else {
+                    console.log("ConfigResponse:Language tag not found");
+                }
+
+                if (BusinessStartTime.length > 0) {
+                    console.log("Business Start Time:", BusinessStartTime[0].textContent);
+                } else {
+                    console.log("ConfigResponse:Business_Start_Time tag not found");
+                }
+
+                if (BusinessEndTime.length > 0) {
+                    console.log("Business End Time:", BusinessEndTime[0].textContent);
+                } else {
+                    console.log("ConfigResponse:Business_End_Time tag not found");
+                }
 
             } catch (error) {
                 // Log the error
