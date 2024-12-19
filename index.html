@@ -21,9 +21,15 @@
                 // Get the response text (XML)
                 const xmlString = await response.text();
 
+                // Log the raw XML response to inspect it
+                console.log('Raw XML Response:', xmlString);
+
                 // Parse the XML string
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+                // Log the parsed XML document to inspect the structure
+                console.log('Parsed XML Document:', xmlDoc);
 
                 // Helper function to get text content safely
                 function getTextContent(tagName) {
