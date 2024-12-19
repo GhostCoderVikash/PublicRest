@@ -25,12 +25,18 @@
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
-                // Extract the values from the XML
-                const businessEndTime = xmlDoc.getElementsByTagName("ConfigResponse:Business_End_Time")[0].textContent;
-                const businessStartTime = xmlDoc.getElementsByTagName("ConfigResponse:Business_Start_Time")[0].textContent;
-                const language = xmlDoc.getElementsByTagName("ConfigResponse:Language")[0].textContent;
-                const message = xmlDoc.getElementsByTagName("ConfigResponse:message")[0].textContent;
-                const url = xmlDoc.getElementsByTagName("ConfigResponse:URL")[0].textContent;
+                // Helper function to get text content safely
+                function getTextContent(tagName) {
+                    const element = xmlDoc.getElementsByTagName(tagName)[0];
+                    return element ? element.textContent : null;
+                }
+
+                // Extract the values from the XML using the helper function
+                const businessEndTime = getTextContent("ConfigResponse:Business_End_Time");
+                const businessStartTime = getTextContent("ConfigResponse:Business_Start_Time");
+                const language = getTextContent("ConfigResponse:Language");
+                const message = getTextContent("ConfigResponse:message");
+                const url = getTextContent("ConfigResponse:URL");
 
                 // Create an object with the extracted data
                 const data = {
