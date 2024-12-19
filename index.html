@@ -9,10 +9,30 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
+        #responseContainer {
+            margin-top: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 600px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
     <h1>API Call to Salesforce (Public)</h1>
+
+    <div id="responseContainer" style="display: none;">
+        <h2>Response:</h2>
+        <p><strong>URL:</strong> <span id="url"></span></p>
+        <p><strong>Message:</strong> <span id="message"></span></p>
+        <p><strong>Language:</strong> <span id="language"></span></p>
+        <p><strong>Business Start Time:</strong> <span id="businessStartTime"></span></p>
+        <p><strong>Business End Time:</strong> <span id="businessEndTime"></span></p>
+    </div>
 
     <script>
         window.onload = function() {
@@ -46,12 +66,29 @@
                 // Log the full data object
                 console.log("Data received:", data);
 
+                // Map the values to variables
+                const url = data.url;
+                const message = data.message;
+                const language = data.language;
+                const businessStartTime = data.businessStartTime;
+                const businessEndTime = data.businessEndTime;
+
                 // Log each property separately
-                console.log("URL:", data.url);
-                console.log("Message:", data.message);
-                console.log("Language:", data.language);
-                console.log("Business Start Time:", data.businessStartTime);
-                console.log("Business End Time:", data.businessEndTime);
+                console.log("Mapped URL:", url);
+                console.log("Mapped Message:", message);
+                console.log("Mapped Language:", language);
+                console.log("Mapped Business Start Time:", businessStartTime);
+                console.log("Mapped Business End Time:", businessEndTime);
+
+                // Display the values on the UI
+                document.getElementById("url").textContent = url;
+                document.getElementById("message").textContent = message;
+                document.getElementById("language").textContent = language;
+                document.getElementById("businessStartTime").textContent = businessStartTime;
+                document.getElementById("businessEndTime").textContent = businessEndTime;
+
+                // Show the response container once data is fetched
+                document.getElementById("responseContainer").style.display = "block";
             })
             .catch(error => {
                 // Log the error
