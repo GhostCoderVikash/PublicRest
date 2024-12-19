@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public API Test</title>
+    <title>API Call to Salesforce (Public)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,15 +13,6 @@
 </head>
 <body>
     <h1>API Call to Salesforce (Public)</h1>
-
-    <div id="responseContainer" style="display: none;">
-        <h2>Response:</h2>
-        <p><strong>URL:</strong> <span id="url"></span></p>
-        <p><strong>Message:</strong> <span id="message"></span></p>
-        <p><strong>Language:</strong> <span id="language"></span></p>
-        <p><strong>Business Start Time:</strong> <span id="businessStartTime"></span></p>
-        <p><strong>Business End Time:</strong> <span id="businessEndTime"></span></p>
-    </div>
 
     <script>
         window.onload = function() {
@@ -39,7 +30,7 @@
                 const response = await fetch(apiEndpoint, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json' // Adjust headers as needed (CORS might block this on client-side)
+                        'Content-Type': 'application/xml' // Expecting XML response
                     }
                 });
 
@@ -50,27 +41,28 @@
                     throw new Error('Failed to fetch data');
                 }
 
-                const data = await response.json(); // Automatically parses the JSON string into an object
+                // Get the response text (XML format)
+                const responseText = await response.text();
 
-                // Log the full response data
-                console.log("Data received:", data);
+                // Parse the XML response
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(responseText, "application/xml");
 
-                // Accessing properties directly from the object
-                console.log("Mapped URL:", data.URL);
-                console.log("Mapped Message:", data.message);
-                console.log("Mapped Language:", data.Language);
-                console.log("Mapped Business Start Time:", data.Business_Start_Time);
-                console.log("Mapped Business End Time:", data.Business_End_Time);
+                // Extract the data, handling the namespace
+                const ns = "http://soap.sforce.com/schemas/class/MiawSiteConfigAPI";
+                const URL = xmlDoc.getElementsByTagNameNS(ns, "URL")[0].textContent;
+                const message = xmlDoc.getElementsByTagNameNS(ns, "message")[0].textContent;
+                const Language = xmlDoc.getElementsByTagNameNS(ns, "Language")[0].textContent;
+                const BusinessStartTime = xmlDoc.getElementsByTagNameNS(ns, "Business_Start_Time")[0].textContent;
+                const BusinessEndTime = xmlDoc.getElementsByTagNameNS(ns, "Business_End_Time")[0].textContent;
 
-                // Display the values on the UI
-                document.getElementById("url").textContent = data.URL;
-                document.getElementById("message").textContent = data.message;
-                document.getElementById("language").textContent = data.Language;
-                document.getElementById("businessStartTime").textContent = data.Business_Start_Time;
-                document.getElementById("businessEndTime").textContent = data.Business_End_Time;
+                // Log each field separately
+                console.log("URL:", URL);
+                console.log("Message:", message);
+                console.log("Language:", Language);
+                console.log("Business Start Time:", BusinessStartTime);
+                console.log("Business End Time:", BusinessEndTime);
 
-                // Show the response container once data is fetched
-                document.getElementById("responseContainer").style.display = "block";
             } catch (error) {
                 // Log the error
                 console.log("Error:", error.message);
